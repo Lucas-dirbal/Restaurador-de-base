@@ -1,0 +1,6 @@
+node_stdout.log
+node_stderr.log
+processo/__pycache__/
+processo/monitor_data/status.json
+saida/execucoes/*
+!saida/execucoes/.gitkeep

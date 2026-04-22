@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Baixar e Restaurar Base</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Monitor Operacional</p>
+        <h1>Baixar e restaurar base</h1>
+        <p class="hero-text">
+          Informe o codigo do cliente, baixe o backup mais recente disponivel no servidor e restaure a base Firebird sem sair desta tela.
+        </p>
+      </div>
+      <div class="hero-side">
+        <div class="access-card">
+          <span class="access-label">Acesso pela rede</span>
+          <strong id="access-url">Carregando...</strong>
+          <span class="access-help">Use este endereco para abrir o site em outra maquina da rede local.</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="panel global-progress-panel">
+      <div class="global-progress-head">
+        <div class="global-progress-copy">
+          <span class="panel-kicker">Fluxo atual</span>
+          <strong id="global-progress-title" class="global-progress-title">Aguardando um codigo de cliente</strong>
+        </div>
+        <div class="global-progress-meta">
+          <span id="status-badge-top" class="status-badge status-neutral">Aguardando</span>
+          <strong id="global-progress-percent">0.0%</strong>
+          <span id="global-progress-count" class="runtime-hint">Sem atividade</span>
+        </div>
+      </div>
+      <div class="progress-bar global-progress-bar">
+        <div id="global-progress-fill" class="progress-fill global-progress-fill"></div>
+      </div>
+      <p id="global-progress-status" class="progress-status global-progress-status">
+        O sistema vai mostrar aqui cada etapa do download e do restore.
+      </p>
+    </section>
+
+    <main class="dashboard">
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">Entrada</p>
+            <h2>Novo download</h2>
+            <span id="status-badge" class="status-badge status-neutral">Aguardando</span>
+          </div>
+          <div class="control-stack">
+            <span id="process-runtime" class="runtime-hint">Aguardando comando</span>
+            <div class="panel-note panel-note-strong">
+              A base restaurada sera salva dentro da pasta <strong>saida</strong> do projeto.
+            </div>
+          </div>
+        </div>
+
+        <div class="backup-auth-grid">
+          <label class="field-card" for="client-code">
+            <span class="field-label">Codigo do cliente</span>
+            <input
+              id="client-code"
+              class="field-input"
+              type="text"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              maxlength="20"
+              autocomplete="off"
+              placeholder="Digite apenas numeros"
+            >
+          </label>
+          <div class="backup-launch-actions">
+            <button id="start-process-btn" class="action-button" type="button">Baixar e restaurar</button>
+            <button id="stop-process-btn" class="action-button action-button-stop" type="button">Parar</button>
+            <button id="clear-records-btn" class="action-button action-button-danger" type="button">Limpar</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel ready-download-panel">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">Base pronta</p>
+            <h2>Download da base restaurada</h2>
+          </div>
+          <div id="ready-download-status" class="panel-note">
+            O botao sera liberado automaticamente assim que o restore terminar.
+          </div>
+        </div>
+        <div class="ready-download-grid">
+          <div class="ready-download-copy">
+            <strong id="ready-download-name">Nenhuma base restaurada ainda.</strong>
+            <span id="ready-download-path" class="artifact-path">
+              Quando a restauracao concluir, a `.FDB` pronta aparece aqui para download direto.
+            </span>
+          </div>
+          <div class="ready-download-actions">
+            <a
+              id="ready-download-btn"
+              class="action-button action-button-download disabled-link"
+              href="#"
+              aria-disabled="true"
+            >
+              Baixar base pronta
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="stats-grid">
+        <article class="metric-card">
+          <span class="metric-label">Codigo informado</span>
+          <strong id="metric-codigo">-</strong>
+        </article>
+        <article class="metric-card">
+          <span class="metric-label">Codigo formatado</span>
+          <strong id="metric-codigo-formatado">-</strong>
+        </article>
+        <article class="metric-card metric-card-good">
+          <span class="metric-label">Backup selecionado</span>
+          <strong id="metric-backup">-</strong>
+        </article>
+        <article class="metric-card metric-card-soft">
+          <span class="metric-label">Data do backup</span>
+          <strong id="metric-backup-data">-</strong>
+        </article>
+        <article class="metric-card metric-card-warn">
+          <span class="metric-label">Ultima mensagem</span>
+          <strong id="metric-mensagem">-</strong>
+        </article>
+      </section>
+
+      <section class="panel panel-progress">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">Execucao</p>
+            <h2>Status detalhado</h2>
+          </div>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill"></div>
+          </div>
+          <div class="progress-meta">
+            <strong id="progress-percent">0.0%</strong>
+            <span id="progress-count">0/0 etapas</span>
+          </div>
+        </div>
+        <p id="progress-status" class="progress-status">Sem atividade.</p>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <span class="timeline-label">Mensagem</span>
+            <strong id="mensagem">Aguardando primeira execucao</strong>
+          </div>
+          <div class="timeline-grid">
+            <div class="timeline-item">
+              <span class="timeline-label">Iniciado em</span>
+              <strong id="iniciado-em">-</strong>
+            </div>
+            <div class="timeline-item">
+              <span class="timeline-label">Atualizado em</span>
+              <strong id="atualizado-em">-</strong>
+            </div>
+            <div class="timeline-item">
+              <span class="timeline-label">Finalizado em</span>
+              <strong id="finalizado-em">-</strong>
+            </div>
+            <div class="timeline-item">
+              <span class="timeline-label">PID</span>
+              <strong id="process-pid">-</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="layout-grid">
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Artefatos</p>
+              <h2>Arquivos gerados</h2>
+            </div>
+          </div>
+          <div id="files-list" class="file-grid">
+            <div class="list-placeholder">Nenhum arquivo gerado ainda.</div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Log</p>
+              <h2>Etapas do processo</h2>
+            </div>
+          </div>
+          <div id="logs-list" class="log-list">
+            <div class="list-placeholder">Os eventos do processo vao aparecer aqui.</div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

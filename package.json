@@ -1,0 +1,10 @@
+{
+  "name": "baixar-base-monitor",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Site para baixar e restaurar a base Firebird por codigo do cliente",
+  "main": "monitor.js",
+  "scripts": {
+    "start": "node monitor.js"
+  }
+}
